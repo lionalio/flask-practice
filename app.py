@@ -61,7 +61,7 @@ class Database:
         return self.cursor.fetchall()
 
     def list_entries(self, username):
-        self.cursor.execute("SELECT title, body FROM entries  WHERE username = %s", (username))
+        self.cursor.execute("SELECT id, title, body FROM entries  WHERE username = %s", (username))
         return self.cursor.fetchall()
     
     def add_entry(self):
@@ -71,8 +71,9 @@ class Database:
         self.connection.commit()
         return redirect(url_for('show_entries'))
 
-    def get_entry_id(self):
-        pass
+    def get_entry(self, entry_id):
+        self.cursor.execute("SELECT title, body FROM entries WHERE id = %s", (entry_id))
+        return self.cursor.fetchone()
     
 db = Database()
     
@@ -94,14 +95,10 @@ def private():
     return render_template('private.html', entries = entries)
 
 
-#@app.route('/detailed/<int:entry_id>', methods=['GET'])
-#def detailed(entry_id):
-    #db = Database()
-#    entries = db.list_entries(session['username'])
-    #title_selected = request.args.get('type')
-    #print(title_selected)
-    #for e in entries:       
-#    return render_template('detailed.html', entries = entries)
+@app.route('/detailed/<int:entry_id>', methods=['GET'])
+def detailed(entry_id):
+    entry = db.get_entry(entry_id)      
+    return render_template('detailed.html', entry = entry)
     
         
 @app.route('/login', methods=['GET', 'POST'])
