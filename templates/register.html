@@ -1,0 +1,16 @@
+<form class="form-signin" method="post">
+            <span id="reauth-email" class="reauth-email"></span>
+            <input type="text" name="username" id="inputName" class="form-control" placeholder="username" required>
+            <!--input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required !-->
+            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+            <input type="password" name="confirm" id="inputConfirmPassword" class="form-control" placeholder="Confirm password" required>
+            <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Create account</button>
+            <a class="forgot-password" href="{{url_for('login')}}">already have an account? login here!</a>
+</form>
+<form>
+  <a class="register-facebook" href="{{url_for('register_facebook')}}">register with facebook</a>
+</form>
+<form>
+  <a class="register-google" href="{{url_for('register_google')}}">register with google</a>
+</form>
+
