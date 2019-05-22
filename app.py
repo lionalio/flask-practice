@@ -34,10 +34,9 @@ class Database:
                                           cursorclass = pymysql.cursors.DictCursor)
         self.cursor = self.connection.cursor()
 
-    def add_member(self, new_user, new_password):
+    def add_member(self, new_user, new_password, new_email):
         print("-- " + new_user)
-        self.cursor.execute('INSERT INTO members (username, password) VALUES (%s, %s)', (new_user, new_password))
-        #self.cursor.commit()
+        self.cursor.execute('INSERT INTO members (username, password, email) VALUES (%s, %s, %s)', (new_user, new_password, new_email))
         self.connection.commit()
 
     def exist_member(self, user_check):
@@ -79,16 +78,12 @@ db = Database()
     
 @app.route('/', methods=['GET', 'POST'])
 def show_entries():
-    #db = Database()
     entries = db.list_all_blogs()
-    if request.method == 'POST':
-        db.add_entry()
-    return render_template('show_entries.html', entries = entries)
+    return render_template('home.html', entries = entries)
 
 
 @app.route('/private', methods=['GET', 'POST'])
 def private():
-    #db = Database()
     if request.method == 'POST':
         db.add_entry()
     entries = db.list_entries(session['username'])
@@ -118,26 +113,33 @@ def login():
     return render_template('login.html', error = error)
 
 
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('show_entries'))
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        #email = request.form['email']
-        #db = Database()
-        error = None
+        email = request.form['email']
         if not username:
             error = 'Username is required'
         elif not password:
             error = 'Password is required'
+        elif not email:
+            error = 'Email is required'
         elif db.exist_member(username):
             error = 'User {} is already existed'.format(username)
         else:
             session['username'] = username
-            db.add_member(username, password)
+            db.add_member(username, password, email)
             return redirect(url_for('login'))
     return render_template('register.html', error = error)
-
+        
 
 @app.route('/register_facebook')
 def register_facebook():

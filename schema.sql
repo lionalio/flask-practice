@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS members, users_facebook, users_google, entries;
 
 CREATE TABLE members (
        id INTEGER PRIMARY KEY AUTO_INCREMENT,
-       username VARCHAR(50) NOT NULL,
+       username VARCHAR(50) UNIQUE NOT NULL,
        password VARCHAR(256) NOT NULL,
        email VARCHAR(50) UNIQUE,
        registered_by VARCHAR(50)
